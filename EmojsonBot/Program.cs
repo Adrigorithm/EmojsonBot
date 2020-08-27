@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using Newtonsoft.Json;
 
 namespace EmojsonBot
@@ -26,7 +27,7 @@ namespace EmojsonBot
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug
             });
-            
+
             // Attach CommandsNext module
             _commands = _discord.UseCommandsNext(new CommandsNextConfiguration
             {
@@ -41,7 +42,7 @@ namespace EmojsonBot
             
             
             // Infinite Task
-            await _discord.ConnectAsync();
+            await _discord.ConnectAsync(activity: new DiscordActivity("cat GIFs", ActivityType.Watching));
             await Task.Delay(-1);
         }
 

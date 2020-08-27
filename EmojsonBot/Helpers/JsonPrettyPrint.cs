@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EmojsonBot.Helpers
 {
@@ -16,5 +18,15 @@ namespace EmojsonBot.Helpers
                 return stringWriter.ToString();
             }
         }
+        
+        public static void WriteFile(string fileName, JObject json)
+        {
+            using (StreamWriter file = File.CreateText(fileName))
+            using (JsonTextWriter writer = new JsonTextWriter(file){Formatting = Formatting.Indented})
+            {
+                json.WriteTo(writer);
+            }
+        }
+        
     }
 }
