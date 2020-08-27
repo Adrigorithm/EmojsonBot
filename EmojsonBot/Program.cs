@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Newtonsoft.Json;
 
 namespace EmojsonBot
@@ -37,13 +38,31 @@ namespace EmojsonBot
             
             // Register commands
             _commands.RegisterCommands<Commands>();
-            
+
             // Event handlers
-            
+            _discord.MessageCreated += MessageCreated;
             
             // Infinite Task
             await _discord.ConnectAsync(activity: new DiscordActivity("cat GIFs", ActivityType.Watching));
             await Task.Delay(-1);
+        }
+
+        private static async Task MessageCreated(MessageCreateEventArgs e)
+        {
+            foreach(var user in e.MentionedUsers)
+            {
+                if (!user.Id.Equals(135081249017430016) &&
+                    (!user.Id.Equals(96921693489995776) || e.Author.Id == 608275633218519060)) continue;
+                try
+                {
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":catree:"));
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Specified emoji not found, using a vanilla one :(");
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":anger:"));
+                }
+            }
         }
 
         private static async Task<string> GetConfigJson()
