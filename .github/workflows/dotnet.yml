@@ -28,3 +28,7 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - run: dotnet build --runtime ubuntu.16.04-x64
+      - uses: actions/upload-artifact@v2
+        with:
+         name: emojsonbot-ubuntu.16.04-x64
+         path: ./EmojsonBot/bin/debug/netcoreapp3.1/ubuntu.16.04-x64
