@@ -69,22 +69,25 @@ namespace EmojsonBot
 
             string folder = ctx.User.Username.ToLower() + "-emojiful-datapack";
             Directory.CreateDirectory(folder);
-            Directory.CreateDirectory(folder + Path.DirectorySeparatorChar + "emojiful");
-            Directory.CreateDirectory(folder +Path.DirectorySeparatorChar + "emojiful" + Path.DirectorySeparatorChar + "data");
+            JsonPrettyPrint.WriteFile(folder + Path.DirectorySeparatorChar + "pack.mcmeta",
+                new JObject(new JProperty("pack",
+                    new JObject(new JProperty("pack_format", 6), new JProperty("description", "Emojiful emojis!")))));
+            folder += Path.DirectorySeparatorChar + "data";
+            Directory.CreateDirectory(folder);
+            folder += Path.DirectorySeparatorChar + "emojiful";
+            Directory.CreateDirectory(folder);
+            folder += Path.DirectorySeparatorChar + "recipes";
+            Directory.CreateDirectory(folder);
             foreach (var emoji in sEmojiList.emojis)
             {
-                JsonPrettyPrint.WriteFile(folder + Path.DirectorySeparatorChar + "emojiful" + Path.DirectorySeparatorChar + "data" + Path.DirectorySeparatorChar + "" + emoji.name + ".json",
+                JsonPrettyPrint.WriteFile(folder  + Path.DirectorySeparatorChar + emoji.name.ToLower() + ".json",
                     new JObject(new JProperty("category", category), new JProperty("name", emoji.name.ToLower()),
                         new JProperty("url", emoji.url), new JProperty("type", "emojiful:emoji_recipe")));
             }
-
-            JsonPrettyPrint.WriteFile(folder + Path.DirectorySeparatorChar + "emojiful" + Path.DirectorySeparatorChar + "pack.mcmeta",
-                new JObject(new JProperty("pack",
-                    new JObject(new JProperty("pack_format", 6), new JProperty("description", "Emojiful emojis!")))));
-            ZipFile.CreateFromDirectory(folder,
+            ZipFile.CreateFromDirectory(ctx.User.Username.ToLower() + "-emojiful-datapack",
                 ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
             await ctx.RespondWithFileAsync(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
-            Directory.Delete(folder, true);
+            Directory.Delete(ctx.User.Username.ToLower() + "-emojiful-datapack", true);
             File.Delete(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
         }
 
