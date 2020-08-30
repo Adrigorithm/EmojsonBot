@@ -69,16 +69,16 @@ namespace EmojsonBot
 
             string folder = ctx.User.Username.ToLower() + "-emojiful-datapack";
             Directory.CreateDirectory(folder);
-            Directory.CreateDirectory(folder + @"\emojiful");
-            Directory.CreateDirectory(folder + @"\emojiful\data");
+            Directory.CreateDirectory(folder + @"/emojiful");
+            Directory.CreateDirectory(folder + @"/emojiful/data");
             foreach (var emoji in sEmojiList.emojis)
             {
-                JsonPrettyPrint.WriteFile(folder + @"\emojiful\data\" + emoji.name + ".json",
+                JsonPrettyPrint.WriteFile(folder + @"/emojiful/data/" + emoji.name + ".json",
                     new JObject(new JProperty("category", category), new JProperty("name", emoji.name.ToLower()),
                         new JProperty("url", emoji.url), new JProperty("type", "emojiful:emoji_recipe")));
             }
 
-            JsonPrettyPrint.WriteFile(folder + @"\emojiful\pack.mcmeta",
+            JsonPrettyPrint.WriteFile(folder + @"/emojiful/pack.mcmeta",
                 new JObject(new JProperty("pack",
                     new JObject(new JProperty("pack_format", 6), new JProperty("description", "Emojiful emojis!")))));
             ZipFile.CreateFromDirectory(folder,
