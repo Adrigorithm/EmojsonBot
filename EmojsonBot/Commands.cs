@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -28,7 +29,7 @@ namespace EmojsonBot
         {
             SetupApis();
         }
-        
+
         private void SetupApis()
         {
             _catClient = new HttpClient();
@@ -36,14 +37,15 @@ namespace EmojsonBot
                 new AuthenticationHeaderValue("x-api-key", CatToken);
             _foxClient = new HttpClient();
         }
-        
+
         [Command("datapack"), Description("Converts emojis to a datapack format"),
          RequirePermissions(Permissions.SendMessages)]
-        public async Task Convert(CommandContext ctx, [Description("List of emojis")] string emojis)
+        public async Task Convert(CommandContext ctx, [Description("A category for the list of emojis")]
+            string category, [Description("List of emojis")] params string[] emojis)
         {
             EmojiList sEmojiList = new EmojiList();
             sEmojiList.emojis = new List<Emoji>();
-            foreach (var s in emojis.Split(">"))
+            foreach (var s in string.Join("", emojis).Split(">"))
             {
                 if (s.Length > 0)
                 {
@@ -72,19 +74,20 @@ namespace EmojsonBot
             foreach (var emoji in sEmojiList.emojis)
             {
                 JsonPrettyPrint.WriteFile(folder + @"\emojiful\data\" + emoji.name + ".json",
-                    new JObject(new JProperty("category", ""), new JProperty("name", emoji.name.ToLower()),
+                    new JObject(new JProperty("category", category), new JProperty("name", emoji.name.ToLower()),
                         new JProperty("url", emoji.url), new JProperty("type", "emojiful:emoji_recipe")));
             }
 
             JsonPrettyPrint.WriteFile(folder + @"\emojiful\pack.mcmeta",
                 new JObject(new JProperty("pack",
                     new JObject(new JProperty("pack_format", 6), new JProperty("description", "Emojiful emojis!")))));
-            ZipFile.CreateFromDirectory(folder, ctx.User.Username.ToLower() + "-emojiful-datapack.zip");
-            await ctx.RespondWithFileAsync(ctx.User.Username.ToLower() + "-emojiful-datapack.zip");
+            ZipFile.CreateFromDirectory(folder,
+                ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
+            await ctx.RespondWithFileAsync(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
             Directory.Delete(folder, true);
-            File.Delete(ctx.User.Username.ToLower() + "-emojiful-datapack.zip");
+            File.Delete(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
         }
-        
+
         [Command("cat"), Description("Gets a random cat"),
          RequirePermissions(Permissions.SendMessages)]
         public async Task Cat(CommandContext ctx)
@@ -105,7 +108,7 @@ namespace EmojsonBot
 
             await ctx.RespondAsync(null, false, catEmbed);
         }
-        
+
         [Command("fox"), Description("Gets a random fox"),
          RequirePermissions(Permissions.SendMessages)]
         public async Task Fox(CommandContext ctx)
