@@ -55,7 +55,7 @@ namespace EmojsonBot
                     try
                     {
                         emoji.url = "https://cdn.discordapp.com/emojis/" + s.Substring(s.LastIndexOf(":") + 1) +
-                                    (isAnimated ? ".gif" : ".png") + "?v=1";
+                                    (isAnimated ? ".gif" : ".png");
                     }
                     catch (Exception e)
                     {
