@@ -38,6 +38,7 @@ namespace EmojsonBot
             _foxClient = new HttpClient();
         }
 
+        
         [Command("datapack"), Description("Converts emojis to a datapack format"),
          RequirePermissions(Permissions.SendMessages)]
         public async Task Convert(CommandContext ctx, [Description("A category for the list of emojis")]
