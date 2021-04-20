@@ -87,7 +87,9 @@ namespace EmojsonBot
             }
             ZipFile.CreateFromDirectory(ctx.User.Username.ToLower() + "-emojiful-datapack",
                 ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
-            await ctx.RespondWithFileAsync(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
+            var messageBuilder = new DiscordMessageBuilder();
+            messageBuilder = messageBuilder.WithFile(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip", File.Open(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip", FileMode.Open));
+            await ctx.RespondAsync(messageBuilder);
             Directory.Delete(ctx.User.Username.ToLower() + "-emojiful-datapack", true);
             File.Delete(ctx.User.Username.ToLower() + "-" + category + "-emojiful-datapack.zip");
         }
@@ -110,7 +112,7 @@ namespace EmojsonBot
 
             var catEmbed = catImageBuilder.Build();
 
-            await ctx.RespondAsync(null, false, catEmbed);
+            await ctx.RespondAsync(catEmbed);
         }
 
         [Command("fox"), Description("Gets a random fox"),
@@ -131,7 +133,7 @@ namespace EmojsonBot
 
             var foxEmbed = foxImageBuilder.Build();
 
-            await ctx.RespondAsync(null, false, foxEmbed);
+            await ctx.RespondAsync(foxEmbed);
         }
     }
 }
