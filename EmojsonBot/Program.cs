@@ -6,6 +6,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace EmojsonBot
@@ -24,9 +25,7 @@ namespace EmojsonBot
             // Setup DiscordClient
             _discord = new DiscordClient(new DiscordConfiguration
             {
-                Token = cfgJson.Token,
-                UseInternalLogHandler = true,
-                LogLevel = LogLevel.Debug
+                Token = cfgJson.Token
             });
 
             // Attach CommandsNext module
@@ -47,7 +46,8 @@ namespace EmojsonBot
             await Task.Delay(-1);
         }
 
-        private static async Task MessageCreated(MessageCreateEventArgs e)
+        private static async Task MessageCreated(DiscordClient cl
+            ,MessageCreateEventArgs e)
         {
             foreach(var user in e.MentionedUsers)
             {
