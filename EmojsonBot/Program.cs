@@ -64,18 +64,22 @@ namespace EmojsonBot
                 }
             }
 
-            if (!(!e.Message.ReferencedMessage.Author.Id.Equals(135081249017430016) &&
-                  (!e.Message.ReferencedMessage.Author.Id.Equals(96921693489995776) ||
-                   e.Author.Id == 608275633218519060)))
+            DiscordMessage message = e.Message.ReferencedMessage;
+            if (message != null)
             {
-                try
+                foreach(var user in message.MentionedUsers)
                 {
-                    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":catree:"));
-                }
-                catch (ArgumentException)
-                {
-                    Console.WriteLine("Specified emoji not found, using a vanilla one :(");
-                    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":anger:"));
+                    if (!user.Id.Equals(135081249017430016) &&
+                        (!user.Id.Equals(96921693489995776) || e.Author.Id == 608275633218519060)) continue;
+                    try
+                    {
+                        await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":catree:"));
+                    }
+                    catch (ArgumentException)
+                    {
+                        Console.WriteLine("Specified emoji not found, using a vanilla one :(");
+                        await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":anger:"));
+                    }
                 }
             }
         }
