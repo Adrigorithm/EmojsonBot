@@ -25,7 +25,8 @@ namespace EmojsonBot
             // Setup DiscordClient
             _discord = new DiscordClient(new DiscordConfiguration
             {
-                Token = cfgJson.Token
+                Token = cfgJson.Token,
+                Intents = DiscordIntents.AllUnprivileged
             });
 
             // Attach CommandsNext module
