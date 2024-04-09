@@ -1,104 +1,50 @@
 ﻿using System;
 using System.IO;
-using System.Text;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Discord;
+using Discord.WebSocket;
 
-namespace EmojsonBot
+public class Program
 {
-    class Program
+    private readonly static DiscordSocketClient _client = new();
+    private static Config _config;
+    private const string ConfigPath = "Secrets/config.json";
+
+    public static async Task Main()
     {
-        private static DiscordClient _discord;
-        private static CommandsNextExtension _commands;
-        
-        static async Task Main(string[] args)
-        {
-            // Load config.json
-            string json = await GetConfigJson();
-            var cfgJson = JsonConvert.DeserializeObject<ConfigJson>(json);
-            
-            // Setup DiscordClient
-            _discord = new DiscordClient(new DiscordConfiguration
-            {
-                Token = cfgJson.Token,
-                Intents = DiscordIntents.AllUnprivileged
-            });
+        _config = await LoadConfigurationAsync();
+        _client.Log += Log;
 
-            // Attach CommandsNext module
-            _commands = _discord.UseCommandsNext(new CommandsNextConfiguration
-            {
-                StringPrefixes = new string[]{cfgJson.CommandPrefix},
-                EnableMentionPrefix = false
-            });
-            
-            // Register commands
-            _commands.RegisterCommands<Commands>();
+        await _client.LoginAsync(TokenType.Bot, _config.BotToken);
+        await _client.StartAsync();
 
-            // Event handlers
-            _discord.MessageCreated += MessageCreated;
-            
-            // Infinite Task
-            await _discord.ConnectAsync(activity: new DiscordActivity("cat GIFs", ActivityType.Watching));
-            await Task.Delay(-1);
-        }
+        _client.MessageReceived += MessageReceived;
 
-        private static async Task MessageCreated(DiscordClient cl
-            ,MessageCreateEventArgs e)
-        {
-            foreach(var user in e.MentionedUsers)
-            {
-                if (!user.Id.Equals(135081249017430016) &&
-                    (!user.Id.Equals(96921693489995776) || e.Author.Id == 608275633218519060)) continue;
-                try
-                {
-                    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":catree:"));
-                }
-                catch (ArgumentException)
-                {
-                    Console.WriteLine("Specified emoji not found, using a vanilla one :(");
-                    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":anger:"));
-                }
-            }
-
-            DiscordMessage message = e.Message.ReferencedMessage;
-            if (message != null)
-            {
-                foreach(var user in message.MentionedUsers)
-                {
-                    if (!user.Id.Equals(135081249017430016) &&
-                        (!user.Id.Equals(96921693489995776) || e.Author.Id == 608275633218519060)) continue;
-                    try
-                    {
-                        await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":catree:"));
-                    }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine("Specified emoji not found, using a vanilla one :(");
-                        await e.Message.CreateReactionAsync(DiscordEmoji.FromName(_discord, ":anger:"));
-                    }
-                }
-            }
-        }
-
-        private static async Task<string> GetConfigJson()
-        {
-            using var sr = File.OpenText("config.json");
-            return await sr.ReadToEndAsync();
-        }
-        
+        await Task.Delay(-1);
     }
-    
-    public struct ConfigJson
-    {
-        [JsonProperty("token")]
-        public string Token { get; private set; }
 
-        [JsonProperty("prefix")]
-        public string CommandPrefix { get; private set; }
+    private static async Task MessageReceived(SocketMessage message)
+    {
+        if (message is SocketUserMessage socketUserMessage 
+            && (!(socketUserMessage.Author as SocketGuildUser).GuildPermissions.Administrator || socketUserMessage.Id == _config.DevId)
+            && message.MentionedUsers.Any(su => !su.IsBot && (su as SocketGuildUser).GuildPermissions.Administrator))
+        {
+            var reaction = new Emoji("\uD83D\uDCA2");
+            await message.AddReactionAsync(reaction);
+        }
+    }
+
+    private static Task Log(LogMessage message)
+    {
+        Console.WriteLine(message.ToString());
+        return Task.CompletedTask;
+    }
+
+    private static async Task<Config> LoadConfigurationAsync()
+    {
+        var fileStream = File.OpenRead(ConfigPath);
+        return await JsonSerializer.DeserializeAsync<Config>(fileStream);
     }
 }
