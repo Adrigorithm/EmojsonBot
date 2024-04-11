@@ -1,6 +1,13 @@
 using System.Text.Json.Serialization;
 
-internal record Config(
-    [property: JsonPropertyName("botToken")] string BotToken,
-    [property: JsonPropertyName("devId")] ulong DevId
-);
+internal class Config
+{
+    [JsonPropertyName("botToken")]
+    public string BotToken { get; set; }
+
+    [JsonPropertyName("devId")]
+    public ulong? DevId { get; set; }
+
+    [JsonPropertyName("reloadGlobalCommands")]
+    public bool? ReloadGlobalCommands { get; set; }
+}
