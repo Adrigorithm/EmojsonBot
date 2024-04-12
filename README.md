@@ -8,7 +8,7 @@ While there are quite [a few ways](https://learn.microsoft.com/en-us/dotnet/core
 {
     "botToken": "a token generated from the Bot tab on the discord dev platform",
     "devId": 135081249017430016,
-    "reloadGlobalCommands": false
+    "reloadGlobalCommands": true
 }
 ```
 - Make sure the machine you host it on has a dotnet8 runtime
