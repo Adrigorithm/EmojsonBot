@@ -26,7 +26,7 @@ public class Program
 
         _client.Ready += ReadyAsync;
         _client.SlashCommandExecuted += SlashCommandExecutedAsync;
-        _client.MessageReceived += MessageReceivedAsync;
+        // _client.MessageReceived += MessageReceivedAsync;
 
         await Task.Delay(-1);
     }
@@ -48,7 +48,7 @@ public class Program
 
     private static async Task CreateDatapackAsync(SocketSlashCommand command)
     {
-        var datapackPath = "temp";
+        var datapackPath = "temp/";
         var category = (string)command.Data.Options.First().Value;
         var emojiList = (string)command.Data.Options.Last().Value;
 
@@ -126,16 +126,16 @@ public class Program
         }
     }
 
-    private static async Task MessageReceivedAsync(SocketMessage message)
-    {
-        if (message is SocketUserMessage socketUserMessage
-            && (!(socketUserMessage.Author as SocketGuildUser).GuildPermissions.Administrator || socketUserMessage.Id == _config.DevId)
-            && message.MentionedUsers.Any(su => !su.IsBot && (su as SocketGuildUser).GuildPermissions.Administrator))
-        {
-            var reaction = new Emoji("\uD83D\uDCA2");
-            await message.AddReactionAsync(reaction);
-        }
-    }
+    // private static async Task MessageReceivedAsync(SocketMessage message)
+    // {
+    //     if (message is SocketUserMessage socketUserMessage
+    //         && (!(socketUserMessage.Author as SocketGuildUser).GuildPermissions.Administrator || socketUserMessage.Id == _config.DevId)
+    //         && message.MentionedUsers.Any(su => !su.IsBot && (su as SocketGuildUser).GuildPermissions.Administrator))
+    //     {
+    //         var reaction = new Emoji("\uD83D\uDCA2");
+    //         await message.AddReactionAsync(reaction);
+    //     }
+    // }
 
     private static Task Log(LogMessage message)
     {
