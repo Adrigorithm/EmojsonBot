@@ -12,12 +12,17 @@ using Discord.WebSocket;
 
 public class Program
 {
-    private readonly static DiscordSocketClient _client = new();
+    private static DiscordSocketClient _client;
     private static Config _config;
     private const string ConfigPath = "Secrets/config.json";
 
     public static async Task Main()
     {
+        _client = new DiscordSocketClient(new DiscordSocketConfig
+        {
+            UseInteractionSnowflakeDate = false
+        });
+
         _config = await LoadConfigurationAsync();
         _client.Log += Log;
 
@@ -26,7 +31,7 @@ public class Program
 
         _client.Ready += ReadyAsync;
         _client.SlashCommandExecuted += SlashCommandExecutedAsync;
-        // _client.MessageReceived += MessageReceivedAsync;
+        _client.MessageReceived += MessageReceivedAsync;
 
         await Task.Delay(-1);
     }
@@ -126,16 +131,16 @@ public class Program
         }
     }
 
-    // private static async Task MessageReceivedAsync(SocketMessage message)
-    // {
-    //     if (message is SocketUserMessage socketUserMessage
-    //         && (!(socketUserMessage.Author as SocketGuildUser).GuildPermissions.Administrator || socketUserMessage.Id == _config.DevId)
-    //         && message.MentionedUsers.Any(su => !su.IsBot && (su as SocketGuildUser).GuildPermissions.Administrator))
-    //     {
-    //         var reaction = new Emoji("\uD83D\uDCA2");
-    //         await message.AddReactionAsync(reaction);
-    //     }
-    // }
+    private static async Task MessageReceivedAsync(SocketMessage message)
+    {
+        if (message is SocketUserMessage socketUserMessage
+            && (!(socketUserMessage.Author as SocketGuildUser).GuildPermissions.Administrator || socketUserMessage.Id == _config.DevId)
+            && message.MentionedUsers.Any(su => !su.IsBot && (su as SocketGuildUser).GuildPermissions.Administrator))
+        {
+            var reaction = new Emoji("\uD83D\uDCA2");
+            await message.AddReactionAsync(reaction);
+        }
+    }
 
     private static Task Log(LogMessage message)
     {

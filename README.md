@@ -17,6 +17,5 @@ While there are quite [a few ways](https://learn.microsoft.com/en-us/dotnet/core
 }
 ```
 - Make sure the machine you host it on has a dotnet8 runtime
-- The Discord.NET framework that is used by this bot requires a synchronized time (this may not be needed anymore later). On GNU/Linux systems with systemd you can sync with a ntp server with one command: `sudo timedatectl set-ntp true`
 - `dotnet deploy`
 - `dotnet <outputDll.dll>`
