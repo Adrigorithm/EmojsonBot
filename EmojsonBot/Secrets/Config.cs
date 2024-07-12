@@ -7,7 +7,4 @@ internal class Config
 
     [JsonPropertyName("devId")]
     public ulong? DevId { get; set; }
-
-    [JsonPropertyName("reloadGlobalCommands")]
-    public bool? ReloadGlobalCommands { get; set; }
 }
