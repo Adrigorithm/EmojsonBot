@@ -109,6 +109,12 @@ public class Program
             IsRequired = true,
         };
 
+        SlashCommandOptionBuilder versionOption = new()
+        {
+            Name = "version",
+            Type = ApplicationCommandOptionType.
+        }
+
         SlashCommandOptionBuilder emojisOption = new()
         {
             Name = "emojis",
