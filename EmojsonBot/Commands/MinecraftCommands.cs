@@ -11,12 +11,12 @@ namespace EmojsonBot.Commands;
 
 public class MinecraftCommands : InteractionModuleBase
 {
-    private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "../../../temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "../../../temp/datapack/data/emojiful/recipe/" } };
+    private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "temp/datapack/data/emojiful/recipe/" } };
 
     [SlashCommand("datapack", "Discord emojis -> Emojiful datapack!")]
     public async Task GenerateDatapackAsync([Summary("minecraft-version")] MinecraftVersion mcVersion, [Summary("category", "Name to group the emoji by in-game")] string category, [Summary("emojis", "List of emoji")] string emojiList, [Summary("hide", "hide this message from public view")] bool isHidden = false)
     {
-        var datapackParent = "../../../temp/";
+        var datapackParent = "temp/";
         MatchCollection emojiMatches = Regex.Matches(emojiList, ConstantStrings.EmojiRegex);
 
         if (emojiMatches.Count > 0)

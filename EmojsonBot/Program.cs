@@ -8,23 +8,27 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using EmojsonBot.Commands;
+using Microsoft.Extensions.Configuration;
 
 public class Program
 {
     private static DiscordSocketClient _client;
     private static InteractionService _interactionService;
     private static Config _config;
-    private const string ConfigPath = "../../../Secrets/config.json";
 
     public static async Task Main()
     {
+        IConfiguration env = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .Build();
+
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
             UseInteractionSnowflakeDate = false
         });
         
         _interactionService = new(_client);
-        _config = await LoadConfigurationAsync();
+        _config = LoadConfiguration(env);
         _client.Log += Log;
 
         await _client.LoginAsync(TokenType.Bot, _config.BotToken);
@@ -66,9 +70,12 @@ public class Program
         return Task.CompletedTask;
     }
 
-    private static async Task<Config> LoadConfigurationAsync()
-    {
-        var fileStream = File.OpenRead(ConfigPath);
-        return await JsonSerializer.DeserializeAsync<Config>(fileStream);
-    }
+    private static Config LoadConfiguration(IConfiguration env) =>
+        new()
+        {
+            BotToken = env["BOT_TOKEN"],
+            DevId = string.IsNullOrEmpty(env["DEV_ID"])
+                ? null
+                : ulong.Parse(env["DEV_ID"])
+        };
 }
