@@ -1,14 +1,13 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using EmojsonBot.Commands;
+using EmojsonBot.Secrets;
 using Microsoft.Extensions.Configuration;
+
+namespace EmojsonBot;
 
 public class Program
 {
@@ -26,7 +25,7 @@ public class Program
         {
             UseInteractionSnowflakeDate = false
         });
-        
+
         _interactionService = new(_client);
         _config = LoadConfiguration(env);
 
@@ -36,7 +35,6 @@ public class Program
         await _client.StartAsync();
 
         _client.Ready += ReadyAsync;
-        _client.MessageReceived += MessageReceivedAsync;
         _client.InteractionCreated += InteractionCreatedAsync;
 
         await Task.Delay(-1);
@@ -52,17 +50,6 @@ public class Program
     {
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
         await _interactionService.RegisterCommandsToGuildAsync(574341132826312736);
-    }
-
-    private static async Task MessageReceivedAsync(SocketMessage message)
-    {
-        if (message is SocketUserMessage socketUserMessage
-            && (!(socketUserMessage.Author as SocketGuildUser).GuildPermissions.Administrator || socketUserMessage.Id == _config.DevId)
-            && message.MentionedUsers.Any(su => !su.IsBot && (su as SocketGuildUser).GuildPermissions.Administrator))
-        {
-            var reaction = new Emoji("\uD83D\uDCA2");
-            await message.AddReactionAsync(reaction);
-        }
     }
 
     private static Task Log(LogMessage message)

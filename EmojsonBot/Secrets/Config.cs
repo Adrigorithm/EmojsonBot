@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace EmojsonBot.Secrets;
+
 internal class Config
 {
     [JsonPropertyName("botToken")]

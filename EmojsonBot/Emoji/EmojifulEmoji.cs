@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
+namespace EmojsonBot.Emoji;
+
 internal record EmojifulEmoji
 {
     [JsonPropertyName("category")]
