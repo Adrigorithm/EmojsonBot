@@ -29,6 +29,7 @@ public class Program
         
         _interactionService = new(_client);
         _config = LoadConfiguration(env);
+
         _client.Log += Log;
 
         await _client.LoginAsync(TokenType.Bot, _config.BotToken);

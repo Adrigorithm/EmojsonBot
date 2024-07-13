@@ -1,14 +1,16 @@
 FROM mcr.microsoft.com/dotnet/nightly/sdk:9.0-preview-noble AS build
 
-WORKDIR /app
+WORKDIR /home/ubuntu/app
 
-COPY Commands Emoji Enums Helpers Secrets Program.cs temp EmojsonBot.csproj /app/
+COPY EmojsonBot/ .
 
 RUN dotnet restore
 RUN dotnet publish -c Release -o release
 
 FROM mcr.microsoft.com/dotnet/nightly/runtime:9.0-preview-noble
-WORKDIR /app
-COPY --from=build /app/release .
 
-ENTRYPOINT ["dotnet", "EnvironmentVarTest.dll"]
+WORKDIR /home/ubuntu/app
+
+COPY --from=build /home/ubuntu/app/release .
+
+ENTRYPOINT ["dotnet", "EmojsonBot.dll"]
