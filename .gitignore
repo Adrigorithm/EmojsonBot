@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Project specific
-EmojsonBot/Secrets/*.json
+config.json
