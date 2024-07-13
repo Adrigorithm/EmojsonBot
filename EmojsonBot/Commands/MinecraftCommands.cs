@@ -11,12 +11,12 @@ namespace EmojsonBot.Commands;
 
 public class MinecraftCommands : InteractionModuleBase
 {
-    private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "temp/datapack/data/emojiful/recipes" }, { MinecraftVersion.Modern, "temp/datapack/data/emojiful/recipe" } };
+    private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "../../../temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "../../../temp/datapack/data/emojiful/recipe/" } };
 
     [SlashCommand("datapack", "Discord emojis -> Emojiful datapack!")]
-    public async Task GenerateDatapackAsync(InteractionContext ctx, [Summary("minecraft-version")] MinecraftVersion mcVersion, [Summary("category", "Name to group the emoji by in-game")] string category, [Summary("emojis", "List of emoji")] string emojiList, [Summary("hide", "hide this message from public view")] bool isHidden = false)
+    public async Task GenerateDatapackAsync([Summary("minecraft-version")] MinecraftVersion mcVersion, [Summary("category", "Name to group the emoji by in-game")] string category, [Summary("emojis", "List of emoji")] string emojiList, [Summary("hide", "hide this message from public view")] bool isHidden = false)
     {
-        var datapackParent = "temp/";
+        var datapackParent = "../../../temp/";
         MatchCollection emojiMatches = Regex.Matches(emojiList, ConstantStrings.EmojiRegex);
 
         if (emojiMatches.Count > 0)
@@ -26,7 +26,7 @@ public class MinecraftCommands : InteractionModuleBase
                 File.Delete(filePath);
             }
 
-            Directory.Delete(VersionMapper[mcVersion], true);
+            Directory.Delete(datapackParent + "datapack/data/emojiful", true);
             Directory.CreateDirectory(VersionMapper[mcVersion]);
 
             for (var i = 0; i < emojiMatches.Count; i++)
@@ -45,7 +45,7 @@ public class MinecraftCommands : InteractionModuleBase
                 await fs.DisposeAsync();
             }
 
-            var fileName = $"{ctx.User.GlobalName ?? "notch"}-{category}-emojiful-datapack.zip";
+            var fileName = $"{Context.User.GlobalName ?? "notch"}-{category}-emojiful-datapack.zip";
 
             ZipFile.CreateFromDirectory(datapackParent + "datapack/", datapackParent + fileName);
 
