@@ -17,4 +17,4 @@ All it does is respond to a slash command with a file using interactions so a mi
 Note that in `docker build -t adrigorithm/emojson-bot`, the value for `-t` doesn't much matter, but it should be in the format author/imagename and eventually a tag after that. In `docker run --name emojson-bot -e BOT_TOKEN=YourBotTokenHere -e DEV_ID=135081249017430016 adrigorithm/emojson-bot` the DEV_ID environment variable is not needed as it does not do anything, it is perhaps for testing purposes in the future.
 
 ### Without docker
-If you don't want to use docker you can reverse engineer the Dockerfile and manually do the steps, it shoudl be easy :^)
+If you don't want to use docker you can reverse engineer the Dockerfile and manually do the steps, it should be easy :^)

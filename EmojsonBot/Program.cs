@@ -49,7 +49,7 @@ public class Program
     private static async Task ReadyAsync()
     {
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
-        await _interactionService.RegisterCommandsToGuildAsync(574341132826312736);
+        await _interactionService.RegisterCommandsGloballyAsync();
     }
 
     private static Task Log(LogMessage message)
